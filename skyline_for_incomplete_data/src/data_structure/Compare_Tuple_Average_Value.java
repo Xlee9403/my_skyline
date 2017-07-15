@@ -1,4 +1,4 @@
-package data_structure;
+package  src.data_structure;
 
 import java.util.Comparator;
 
