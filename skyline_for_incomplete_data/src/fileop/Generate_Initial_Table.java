@@ -1,6 +1,6 @@
-package fileop;
+package  src.fileop;
 
-import global.Info;
+import  src.global.Info;
 
 import java.io.*;
 import java.util.Random;

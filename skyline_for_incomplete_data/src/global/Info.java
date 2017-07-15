@@ -1,4 +1,4 @@
-package global;
+package src.global;
 
 /**
  * Created by Xue on 2017/7/14.
@@ -90,5 +90,5 @@ public class Info
 
     public static int ALLOCATED_MEMEORY_SIZE = 256*1024*1024;
 
-    public static int BLOCK_SIZE = 1000000;
+    public static int BLOCK_SIZE = 10000;
 }

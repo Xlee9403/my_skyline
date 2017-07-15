@@ -1,7 +1,7 @@
-package algrithm;
+package src.algrithm;
 
-import data_structure.Tuple;
-import global.Info;
+import src.global.Info;
+import src.data_structure.Tuple;
 
 import java.io.*;
 
@@ -12,6 +12,8 @@ public class test
 {
     public void generate_skyline()
     {
+        int need_compare = 0;
+        int cand_io_count = 0;
         //记录I/O数
         int in_out_count = 0;
 
@@ -41,6 +43,8 @@ public class test
                     bytesRead += pt_reader.read(pt_buf, bytesRead,
                             ptToRead - bytesRead);
                 bytesRead = 0;
+
+                cand_io_count ++;
 
                 in_out_count ++;
 
@@ -143,7 +147,7 @@ public class test
                             }
                             reader.close();
 //							System.out.println(should_skip);
-                            System.out.println("可比较的元组数为" + hava_commen_sub);
+                            System.out.println("已用的I/O数为" + in_out_count);
                         }
                         else
                         {
@@ -202,12 +206,13 @@ public class test
                                     if ((dominate == 0) && (equal_count < con_count))
                                         dominated_sorted_pi[(int)(comp_temp.average_value)]
                                                 = 1;
-                                        //候选集里的该元组被支配，结束当前循环
-                                    else if ((con_count == dominate) &&
+                                    //候选集里的该元组被支配，结束当前循环
+                                    if ((con_count == dominate) &&
                                             (equal_count < con_count))
                                     {
                                         dominated = true;
 
+                                        need_compare ++;
                                         break;
                                     }
                                 }
@@ -233,6 +238,9 @@ public class test
             System.out.println("=============skyline结果元组个数有==========");
             System.out.println(skyline_result);
             pt_reader.close();
+
+            System.out.println("=============实际比较的个数有==========");
+            System.out.println(need_compare);
 
         }
         catch (Exception e)

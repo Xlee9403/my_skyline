@@ -1,7 +1,7 @@
-package algrithm;
+package  src.algrithm;
 
-import data_structure.Tuple;
-import global.Info;
+import  src.data_structure.Tuple;
+import  src.global.Info;
 
 import java.io.*;
 

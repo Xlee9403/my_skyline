@@ -1,4 +1,4 @@
-package data_structure;
+package src.data_structure;
 
 /**
  * Created by Xue on 2017/7/14.

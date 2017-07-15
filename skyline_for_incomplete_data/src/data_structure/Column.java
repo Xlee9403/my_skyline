@@ -1,8 +1,9 @@
-package data_structure;
+package src.data_structure;
 
-import global.Info;
+import src.global.Info;
 
-/**
+
+/**s
  * Created by Xue on 2017/7/14.
  */
 public class Column

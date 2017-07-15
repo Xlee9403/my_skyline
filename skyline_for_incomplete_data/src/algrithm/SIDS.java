@@ -1,10 +1,10 @@
-package algrithm;
+package  src.algrithm;
 
-import data_structure.Column;
-import data_structure.Processed_count;
-import data_structure.Reverse_Parse;
-import data_structure.Tuple;
-import global.Info;
+import  src.data_structure.Column;
+import  src.data_structure.Processed_count;
+import  src.data_structure.Reverse_Parse;
+import  src.data_structure.Tuple;
+import  src.global.Info;
 
 import java.io.*;
 import java.util.ArrayList;
