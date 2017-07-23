@@ -60,7 +60,6 @@ public class Generate_PT_With_ACD
 
                 temp.average_value = attribute_count/(long)(complete_count);
 
-
                 Reverse_Parse rp = new Reverse_Parse();
                 writer_buf = rp.rev_parse_tuple_average(temp);
 

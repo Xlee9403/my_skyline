@@ -87,9 +87,9 @@ public class BatchConstruction
         //SIDS的算法流程
 //		bc.batch_SIDS();
 
-//      bc.batch_ISSA();
+      bc.batch_ISSA();
 
-        bc.batch_MY_RPID();
+//        bc.batch_MY_RPID();
 
         long endTime = System.currentTimeMillis();
 

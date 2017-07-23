@@ -46,20 +46,25 @@ public class Info
     public static String COLUMN_ROOT = "column/";
     public static String COLUMN_PATH = "column";
 
+    public static String COLUMN_SORT_PI_PATH = "column_sort_pi.tbl";
+
     public static String COLUMN_SORT_PATH = "column_sort";
 
     public static String COLUMN_COUNT_PATH = "column_count.tbl";
 
-    public static double incompleteness_ratio = 0.2;
+    public static String BUCKET_ROOT = "bucket/";
+    public static String BUCKET_PATH = "bucket_";
+
+    public static double incompleteness_ratio = 0.1;
 
     public static int TUPLE_NUMBER = 100000;
-    public static int ATTRIBUTE_NUMBER = 20;
+    public static int ATTRIBUTE_NUMBER = 6;
     public static int POSISION_INDEX_NUMBER = 1;
     public static int BUCKET_INDEX_NUMBER = 1;
     public static int COMPLETE_COUNT_NUMBER = 1;
     public static int SUB_NUM_NUMBER = 1;
     public static int AVERATGE_VALUE_NUMBER = 1;
-    public static int RELATED_ATTRIBUTES_NUMBER = 12;
+    public static int RELATED_ATTRIBUTES_NUMBER = 6;
 
     public static int ATTRIBUTE_BYTES_LENGTH = 8;
 
