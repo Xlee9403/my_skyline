@@ -75,29 +75,27 @@ public class Tuple
                             ((long)(buf[6] & 0xff) <<  8) |
                             ((long)(buf[7] & 0xff)));
 
-            position_index =
-                    (((long)(buf[0] & 0xff) << 56) |
-                            ((long)(buf[1] & 0xff) << 48) |
-                            ((long)(buf[2] & 0xff) << 40) |
-                            ((long)(buf[3] & 0xff) << 32) |
-                            ((long)(buf[4] & 0xff) << 24) |
-                            ((long)(buf[5] & 0xff) << 16) |
-                            ((long)(buf[6] & 0xff) <<  8) |
-                            ((long)(buf[7] & 0xff)));
+            position_index = (((long)(buf[0] & 0xff) << 56) |
+                              ((long)(buf[8 + 1] & 0xff) << 48) |
+                              ((long)(buf[8 + 2] & 0xff) << 40) |
+                              ((long)(buf[8 + 3] & 0xff) << 32) |
+                              ((long)(buf[8 + 4] & 0xff) << 24) |
+                              ((long)(buf[8 + 5] & 0xff) << 16) |
+                              ((long)(buf[8 + 6] & 0xff) <<  8) |
+                              ((long)(buf[8 + 7] & 0xff)));
 
             for (int i = 0; i < Info.ATTRIBUTE_NUMBER; i++)
             {
                 int j = i + Info.POSISION_INDEX_NUMBER + Info.BUCKET_INDEX_NUMBER;
 
-                attributes[i] =
-                        (((long)(buf[8*j + 0] & 0xff) << 56) |
-                                ((long)(buf[8*j + 1] & 0xff) << 48) |
-                                ((long)(buf[8*j + 2] & 0xff) << 40) |
-                                ((long)(buf[8*j + 3] & 0xff) << 32) |
-                                ((long)(buf[8*j + 4] & 0xff) << 24) |
-                                ((long)(buf[8*j + 5] & 0xff) << 16) |
-                                ((long)(buf[8*j + 6] & 0xff) <<  8) |
-                                ((long)(buf[8*j + 7] & 0xff)));
+                attributes[i] = (((long)(buf[8*j + 0] & 0xff) << 56) |
+                                 ((long)(buf[8*j + 1] & 0xff) << 48) |
+                                 ((long)(buf[8*j + 2] & 0xff) << 40) |
+                                 ((long)(buf[8*j + 3] & 0xff) << 32) |
+                                 ((long)(buf[8*j + 4] & 0xff) << 24) |
+                                 ((long)(buf[8*j + 5] & 0xff) << 16) |
+                                 ((long)(buf[8*j + 6] & 0xff) <<  8) |
+                                 ((long)(buf[8*j + 7] & 0xff)));
             }
         }
     }

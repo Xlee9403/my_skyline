@@ -54,6 +54,9 @@ public class Info
 
     public static String BUCKET_ROOT = "bucket/";
     public static String BUCKET_PATH = "bucket_";
+    public static String BUCKET_SKYLINE_PATH = "bucket_skyline_";
+
+    public static String SHADOW_SKYLINE_PATH = "shadow_skyline.tbl";
 
     public static double incompleteness_ratio = 0.1;
 
