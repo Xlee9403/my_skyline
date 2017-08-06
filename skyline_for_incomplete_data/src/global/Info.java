@@ -1,5 +1,7 @@
 package src.global;
 
+import org.omg.CORBA.INV_FLAG;
+
 /**
  * Created by Xue on 2017/7/14.
  */
@@ -12,6 +14,16 @@ public class Info
     public static String COPY_INITIAL_TABLE_PATH = "copy_initial_table.tbl";
 
     public static String CANDIDATE_TABLE_PATH = "candidate_table";
+
+    public static String SCAN_TABLE_PATH = "scan_table.tbl";
+    public static String SCAN_AVERAGE_BUCKET_TABLE_PATH =
+            "scan_average_bucket_table.tbl";
+
+    public static String SCAN_COMPARE_TABLE_PATH =
+            "scan_compare_table.tbl";
+
+    public static String SCAN_CANDIDATE_TABLE_PATH =
+            "scan_candidate_table.tbl";
 
     public static String TABLE_WITH_BUCKET_NUM_PATH =
             "table_with_bucket_num.tbl";
@@ -46,7 +58,7 @@ public class Info
     public static String COLUMN_ROOT = "column/";
     public static String COLUMN_PATH = "column";
 
-    public static String COLUMN_SORT_PI_PATH = "column_sort_pi.tbl";
+    public static String COLUMN_SORT_PI_PATH = "column_sort_pi";
 
     public static String COLUMN_SORT_PATH = "column_sort";
 
@@ -57,6 +69,13 @@ public class Info
     public static String BUCKET_SKYLINE_PATH = "bucket_skyline_";
 
     public static String SHADOW_SKYLINE_PATH = "shadow_skyline.tbl";
+
+    public static String PRUNE_BLOCK_PATH = "prune_block.tbl";
+
+    public static String sort_prefix = "sorted";
+
+    public static String BITMAP_ROOT = "bitmap/";
+    public static String BITMAP_PATH = "bitmap";
 
     public static double incompleteness_ratio = 0.1;
 
@@ -70,6 +89,8 @@ public class Info
     public static int RELATED_ATTRIBUTES_NUMBER = 6;
 
     public static int ATTRIBUTE_BYTES_LENGTH = 8;
+
+    public static int PRUNE_NUM = 10;
 
     public static int COLUMN_BYTES_LENGTH =
             2 * Info.ATTRIBUTE_BYTES_LENGTH;
@@ -96,7 +117,23 @@ public class Info
                     + Info.POSISION_INDEX_NUMBER + Info.AVERATGE_VALUE_NUMBER)
                     * Info.ATTRIBUTE_BYTES_LENGTH;
 
+    public static int TUPLE_AVERAGE_BUCKET_BYTES_LENGTH =
+            (Info.ATTRIBUTE_NUMBER + Info.AVERATGE_VALUE_NUMBER
+                    + Info.BUCKET_INDEX_NUMBER + Info.POSISION_INDEX_NUMBER)
+                    * Info.ATTRIBUTE_BYTES_LENGTH;
+
+    public static int TUPLE_SUB_AVERAGE_BUCKET_BYTES_LENGTH =
+            (Info.ATTRIBUTE_NUMBER + Info.AVERATGE_VALUE_NUMBER
+             + Info.BUCKET_INDEX_NUMBER + Info.POSISION_INDEX_NUMBER
+             + Info.SUB_NUM_NUMBER) * Info.ATTRIBUTE_BYTES_LENGTH;
+
+    public static int BIT_BLOCK_SIZE = 4*1024;
+
+    public static double LOGARITHMIC_BASE = 2.0;
+
     public static int ALLOCATED_MEMEORY_SIZE = 256*1024*1024;
 
     public static int BLOCK_SIZE = 10000;
+
+    public static int BIT_READ_SIZE = Info.BLOCK_SIZE / 8;
 }

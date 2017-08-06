@@ -7,6 +7,9 @@ import src.global.Info;
  */
 public class Tuple
 {
+    public boolean dominated = false;
+
+    public int temp_position;
     //桶号
     public long bucket_index;
 
@@ -28,29 +31,27 @@ public class Tuple
         }
         else
         {
-            position_index =
-                    (((long)(buf[0] & 0xff) << 56) |
-                            ((long)(buf[1] & 0xff) << 48) |
-                            ((long)(buf[2] & 0xff) << 40) |
-                            ((long)(buf[3] & 0xff) << 32) |
-                            ((long)(buf[4] & 0xff) << 24) |
-                            ((long)(buf[5] & 0xff) << 16) |
-                            ((long)(buf[6] & 0xff) <<  8) |
-                            ((long)(buf[7] & 0xff)));
+            position_index = (((long)(buf[0] & 0xff) << 56) |
+                              ((long)(buf[1] & 0xff) << 48) |
+                              ((long)(buf[2] & 0xff) << 40) |
+                              ((long)(buf[3] & 0xff) << 32) |
+                              ((long)(buf[4] & 0xff) << 24) |
+                              ((long)(buf[5] & 0xff) << 16) |
+                              ((long)(buf[6] & 0xff) <<  8) |
+                              ((long)(buf[7] & 0xff)));
 
             for (int i = 0; i < Info.ATTRIBUTE_NUMBER; i++)
             {
                 int j = i + Info.POSISION_INDEX_NUMBER;
 
-                attributes[i] =
-                        (((long)(buf[8*j + 0] & 0xff) << 56) |
-                                ((long)(buf[8*j + 1] & 0xff) << 48) |
-                                ((long)(buf[8*j + 2] & 0xff) << 40) |
-                                ((long)(buf[8*j + 3] & 0xff) << 32) |
-                                ((long)(buf[8*j + 4] & 0xff) << 24) |
-                                ((long)(buf[8*j + 5] & 0xff) << 16) |
-                                ((long)(buf[8*j + 6] & 0xff) <<  8) |
-                                ((long)(buf[8*j + 7] & 0xff)));
+                attributes[i] = (((long)(buf[8*j + 0] & 0xff) << 56) |
+                                 ((long)(buf[8*j + 1] & 0xff) << 48) |
+                                 ((long)(buf[8*j + 2] & 0xff) << 40) |
+                                 ((long)(buf[8*j + 3] & 0xff) << 32) |
+                                 ((long)(buf[8*j + 4] & 0xff) << 24) |
+                                 ((long)(buf[8*j + 5] & 0xff) << 16) |
+                                 ((long)(buf[8*j + 6] & 0xff) <<  8) |
+                                 ((long)(buf[8*j + 7] & 0xff)));
             }
         }
     }
@@ -65,8 +66,7 @@ public class Tuple
         }
         else
         {
-            bucket_index =
-                    (((long)(buf[0] & 0xff) << 56) |
+            bucket_index = (((long)(buf[0] & 0xff) << 56) |
                             ((long)(buf[1] & 0xff) << 48) |
                             ((long)(buf[2] & 0xff) << 40) |
                             ((long)(buf[3] & 0xff) << 32) |
@@ -75,7 +75,7 @@ public class Tuple
                             ((long)(buf[6] & 0xff) <<  8) |
                             ((long)(buf[7] & 0xff)));
 
-            position_index = (((long)(buf[0] & 0xff) << 56) |
+            position_index = (((long)(buf[8 + 0] & 0xff) << 56) |
                               ((long)(buf[8 + 1] & 0xff) << 48) |
                               ((long)(buf[8 + 2] & 0xff) << 40) |
                               ((long)(buf[8 + 3] & 0xff) << 32) |
@@ -110,40 +110,37 @@ public class Tuple
         }
         else
         {
-            comlete_count =
-                    (((long)(buf[0] & 0xff) << 56) |
-                            ((long)(buf[1] & 0xff) << 48) |
-                            ((long)(buf[2] & 0xff) << 40) |
-                            ((long)(buf[3] & 0xff) << 32) |
-                            ((long)(buf[4] & 0xff) << 24) |
-                            ((long)(buf[5] & 0xff) << 16) |
-                            ((long)(buf[6] & 0xff) <<  8) |
-                            ((long)(buf[7] & 0xff)));
+            comlete_count = (((long)(buf[0] & 0xff) << 56) |
+                             ((long)(buf[1] & 0xff) << 48) |
+                             ((long)(buf[2] & 0xff) << 40) |
+                             ((long)(buf[3] & 0xff) << 32) |
+                             ((long)(buf[4] & 0xff) << 24) |
+                             ((long)(buf[5] & 0xff) << 16) |
+                             ((long)(buf[6] & 0xff) <<  8) |
+                             ((long)(buf[7] & 0xff)));
 
-            position_index =
-                    (((long)(buf[8 + 0] & 0xff) << 56) |
-                            ((long)(buf[8 + 1] & 0xff) << 48) |
-                            ((long)(buf[8 + 2] & 0xff) << 40) |
-                            ((long)(buf[8 + 3] & 0xff) << 32) |
-                            ((long)(buf[8 + 4] & 0xff) << 24) |
-                            ((long)(buf[8 + 5] & 0xff) << 16) |
-                            ((long)(buf[8 + 6] & 0xff) <<  8) |
-                            ((long)(buf[8 + 7] & 0xff)));
+            position_index = (((long)(buf[8 + 0] & 0xff) << 56) |
+                              ((long)(buf[8 + 1] & 0xff) << 48) |
+                              ((long)(buf[8 + 2] & 0xff) << 40) |
+                              ((long)(buf[8 + 3] & 0xff) << 32) |
+                              ((long)(buf[8 + 4] & 0xff) << 24) |
+                              ((long)(buf[8 + 5] & 0xff) << 16) |
+                              ((long)(buf[8 + 6] & 0xff) <<  8) |
+                              ((long)(buf[8 + 7] & 0xff)));
 
             for (int i = 0; i < Info.ATTRIBUTE_NUMBER; i++)
             {
                 int j = i + Info.POSISION_INDEX_NUMBER
                         + Info.COMPLETE_COUNT_NUMBER ;
 
-                attributes[i] =
-                        (((long)(buf[8*j + 0] & 0xff) << 56) |
-                                ((long)(buf[8*j + 1] & 0xff) << 48) |
-                                ((long)(buf[8*j + 2] & 0xff) << 40) |
-                                ((long)(buf[8*j + 3] & 0xff) << 32) |
-                                ((long)(buf[8*j + 4] & 0xff) << 24) |
-                                ((long)(buf[8*j + 5] & 0xff) << 16) |
-                                ((long)(buf[8*j + 6] & 0xff) <<  8) |
-                                ((long)(buf[8*j + 7] & 0xff)));
+                attributes[i] = (((long)(buf[8*j + 0] & 0xff) << 56) |
+                                 ((long)(buf[8*j + 1] & 0xff) << 48) |
+                                 ((long)(buf[8*j + 2] & 0xff) << 40) |
+                                 ((long)(buf[8*j + 3] & 0xff) << 32) |
+                                 ((long)(buf[8*j + 4] & 0xff) << 24) |
+                                 ((long)(buf[8*j + 5] & 0xff) << 16) |
+                                 ((long)(buf[8*j + 6] & 0xff) <<  8) |
+                                 ((long)(buf[8*j + 7] & 0xff)));
             }
         }
     }
@@ -158,40 +155,36 @@ public class Tuple
         }
         else
         {
-            average_value =
-                    (((long)(buf[0] & 0xff) << 56) |
-                            ((long)(buf[1] & 0xff) << 48) |
-                            ((long)(buf[2] & 0xff) << 40) |
-                            ((long)(buf[3] & 0xff) << 32) |
-                            ((long)(buf[4] & 0xff) << 24) |
-                            ((long)(buf[5] & 0xff) << 16) |
-                            ((long)(buf[6] & 0xff) <<  8) |
-                            ((long)(buf[7] & 0xff)));
+            average_value = (((long)(buf[0] & 0xff) << 56) |
+                             ((long)(buf[1] & 0xff) << 48) |
+                             ((long)(buf[2] & 0xff) << 40) |
+                             ((long)(buf[3] & 0xff) << 32) |
+                             ((long)(buf[4] & 0xff) << 24) |
+                             ((long)(buf[5] & 0xff) << 16) |
+                             ((long)(buf[6] & 0xff) <<  8) |
+                             ((long)(buf[7] & 0xff)));
 
-            position_index =
-                    (((long)(buf[8 + 0] & 0xff) << 56) |
-                            ((long)(buf[8 + 1] & 0xff) << 48) |
-                            ((long)(buf[8 + 2] & 0xff) << 40) |
-                            ((long)(buf[8 + 3] & 0xff) << 32) |
-                            ((long)(buf[8 + 4] & 0xff) << 24) |
-                            ((long)(buf[8 + 5] & 0xff) << 16) |
-                            ((long)(buf[8 + 6] & 0xff) <<  8) |
-                            ((long)(buf[8 + 7] & 0xff)));
+            position_index = (((long)(buf[8 + 0] & 0xff) << 56) |
+                              ((long)(buf[8 + 1] & 0xff) << 48) |
+                              ((long)(buf[8 + 2] & 0xff) << 40) |
+                              ((long)(buf[8 + 3] & 0xff) << 32) |
+                              ((long)(buf[8 + 4] & 0xff) << 24) |
+                              ((long)(buf[8 + 5] & 0xff) << 16) |
+                              ((long)(buf[8 + 6] & 0xff) <<  8) |
+                              ((long)(buf[8 + 7] & 0xff)));
 
             for (int i = 0; i < Info.ATTRIBUTE_NUMBER; i++)
             {
                 int j = i + Info.POSISION_INDEX_NUMBER
                         + Info.COMPLETE_COUNT_NUMBER ;
 
-                attributes[i] =
-                        (((long)(buf[8*j + 0] & 0xff) << 56) |
-                                ((long)(buf[8*j + 1] & 0xff) << 48) |
-                                ((long)(buf[8*j + 2] & 0xff) << 40) |
-                                ((long)(buf[8*j + 3] & 0xff) << 32) |
-                                ((long)(buf[8*j + 4] & 0xff) << 24) |
-                                ((long)(buf[8*j + 5] & 0xff) << 16) |
-                                ((long)(buf[8*j + 6] & 0xff) <<  8) |
-                                ((long)(buf[8*j + 7] & 0xff)));
+                attributes[i] = (((long)(buf[8*j + 0] & 0xff) << 56) |
+                                 ((long)(buf[8*j + 1] & 0xff) << 48) |
+                                 ((long)(buf[8*j + 3] & 0xff) << 32) |
+                                 ((long)(buf[8*j + 4] & 0xff) << 24) |
+                                 ((long)(buf[8*j + 5] & 0xff) << 16) |
+                                 ((long)(buf[8*j + 6] & 0xff) <<  8) |
+                                 ((long)(buf[8*j + 7] & 0xff)));
             }
         }
     }
@@ -206,8 +199,62 @@ public class Tuple
         }
         else
         {
-            sub_index =
-                    (((long)(buf[0] & 0xff) << 56) |
+            sub_index = (((long)(buf[0] & 0xff) << 56) |
+                         ((long)(buf[1] & 0xff) << 48) |
+                         ((long)(buf[2] & 0xff) << 40) |
+                         ((long)(buf[3] & 0xff) << 32) |
+                         ((long)(buf[4] & 0xff) << 24) |
+                         ((long)(buf[5] & 0xff) << 16) |
+                         ((long)(buf[6] & 0xff) <<  8) |
+                         ((long)(buf[7] & 0xff)));
+
+            average_value = (((long)(buf[8 + 0] & 0xff) << 56) |
+                             ((long)(buf[8 + 1] & 0xff) << 48) |
+                             ((long)(buf[8 + 2] & 0xff) << 40) |
+                             ((long)(buf[8 + 3] & 0xff) << 32) |
+                             ((long)(buf[8 + 4] & 0xff) << 24) |
+                             ((long)(buf[8 + 5] & 0xff) << 16) |
+                             ((long)(buf[8 + 6] & 0xff) <<  8) |
+                             ((long)(buf[8 + 7] & 0xff)));
+
+            position_index = (((long)(buf[8*2 + 0] & 0xff) << 56) |
+                              ((long)(buf[8*2 + 1] & 0xff) << 48) |
+                              ((long)(buf[8*2 + 2] & 0xff) << 40) |
+                              ((long)(buf[8*2 + 3] & 0xff) << 32) |
+                              ((long)(buf[8*2 + 4] & 0xff) << 24) |
+                              ((long)(buf[8*2 + 5] & 0xff) << 16) |
+                              ((long)(buf[8*2 + 6] & 0xff) <<  8) |
+                              ((long)(buf[8*2 + 7] & 0xff)));
+
+            for (int i = 0; i < Info.ATTRIBUTE_NUMBER; i++)
+            {
+                int j = i + Info.POSISION_INDEX_NUMBER
+                        + Info.AVERATGE_VALUE_NUMBER
+                        + Info.SUB_NUM_NUMBER;
+
+                attributes[i] = (((long)(buf[8*j + 0] & 0xff) << 56) |
+                                 ((long)(buf[8*j + 1] & 0xff) << 48) |
+                                 ((long)(buf[8*j + 2] & 0xff) << 40) |
+                                 ((long)(buf[8*j + 3] & 0xff) << 32) |
+                                 ((long)(buf[8*j + 4] & 0xff) << 24) |
+                                 ((long)(buf[8*j + 5] & 0xff) << 16) |
+                                 ((long)(buf[8*j + 6] & 0xff) <<  8) |
+                                 ((long)(buf[8*j + 7] & 0xff)));
+            }
+        }
+    }
+
+    //解析带有元组完整维度平均值的元组
+    public void parse_average_bucket(byte[] buf)
+    {
+        if (buf.length != Info.TUPLE_AVERAGE_BUCKET_BYTES_LENGTH)
+        {
+            System.out.println("error");
+            return;
+        }
+        else
+        {
+            bucket_index = (((long)(buf[0] & 0xff) << 56) |
                             ((long)(buf[1] & 0xff) << 48) |
                             ((long)(buf[2] & 0xff) << 40) |
                             ((long)(buf[3] & 0xff) << 32) |
@@ -215,42 +262,107 @@ public class Tuple
                             ((long)(buf[5] & 0xff) << 16) |
                             ((long)(buf[6] & 0xff) <<  8) |
                             ((long)(buf[7] & 0xff)));
-
             average_value =
                     (((long)(buf[8 + 0] & 0xff) << 56) |
-                            ((long)(buf[8 + 1] & 0xff) << 48) |
-                            ((long)(buf[8 + 2] & 0xff) << 40) |
-                            ((long)(buf[8 + 3] & 0xff) << 32) |
-                            ((long)(buf[8 + 4] & 0xff) << 24) |
-                            ((long)(buf[8 + 5] & 0xff) << 16) |
-                            ((long)(buf[8 + 6] & 0xff) <<  8) |
-                            ((long)(buf[8 + 7] & 0xff)));
+                     ((long)(buf[8 + 1] & 0xff) << 48) |
+                     ((long)(buf[8 + 2] & 0xff) << 40) |
+                     ((long)(buf[8 + 3] & 0xff) << 32) |
+                     ((long)(buf[8 + 4] & 0xff) << 24) |
+                     ((long)(buf[8 + 5] & 0xff) << 16) |
+                     ((long)(buf[8 + 6] & 0xff) <<  8) |
+                     ((long)(buf[8 + 7] & 0xff)));
 
             position_index =
                     (((long)(buf[8*2 + 0] & 0xff) << 56) |
-                            ((long)(buf[8*2 + 1] & 0xff) << 48) |
-                            ((long)(buf[8*2 + 2] & 0xff) << 40) |
-                            ((long)(buf[8*2 + 3] & 0xff) << 32) |
-                            ((long)(buf[8*2 + 4] & 0xff) << 24) |
-                            ((long)(buf[8*2 + 5] & 0xff) << 16) |
-                            ((long)(buf[8*2 + 6] & 0xff) <<  8) |
-                            ((long)(buf[8*2 + 7] & 0xff)));
+                     ((long)(buf[8*2 + 1] & 0xff) << 48) |
+                     ((long)(buf[8*2 + 2] & 0xff) << 40) |
+                     ((long)(buf[8*2 + 3] & 0xff) << 32) |
+                     ((long)(buf[8*2 + 4] & 0xff) << 24) |
+                     ((long)(buf[8*2 + 5] & 0xff) << 16) |
+                     ((long)(buf[8*2 + 6] & 0xff) <<  8) |
+                     ((long)(buf[8*2 + 7] & 0xff)));
 
             for (int i = 0; i < Info.ATTRIBUTE_NUMBER; i++)
             {
                 int j = i + Info.POSISION_INDEX_NUMBER
-                        + Info.COMPLETE_COUNT_NUMBER
-                        + Info.SUB_NUM_NUMBER;
+                        + Info.AVERATGE_VALUE_NUMBER
+                        + Info.BUCKET_INDEX_NUMBER;
 
                 attributes[i] =
-                        (((long)(buf[8*j + 0] & 0xff) << 56) |
-                                ((long)(buf[8*j + 1] & 0xff) << 48) |
-                                ((long)(buf[8*j + 2] & 0xff) << 40) |
-                                ((long)(buf[8*j + 3] & 0xff) << 32) |
-                                ((long)(buf[8*j + 4] & 0xff) << 24) |
-                                ((long)(buf[8*j + 5] & 0xff) << 16) |
-                                ((long)(buf[8*j + 6] & 0xff) <<  8) |
-                                ((long)(buf[8*j + 7] & 0xff)));
+                       (((long)(buf[8*j + 0] & 0xff) << 56) |
+                        ((long)(buf[8*j + 1] & 0xff) << 48) |
+                        ((long)(buf[8*j + 3] & 0xff) << 32) |
+                        ((long)(buf[8*j + 4] & 0xff) << 24) |
+                        ((long)(buf[8*j + 5] & 0xff) << 16) |
+                        ((long)(buf[8*j + 6] & 0xff) <<  8) |
+                        ((long)(buf[8*j + 7] & 0xff)));
+            }
+        }
+    }
+
+    //解析带有元组完整维度平均值子表的元组
+    public void parse_sub_average_bucket(byte[] buf)
+    {
+        if (buf.length != Info.TUPLE_SUB_AVERAGE_BUCKET_BYTES_LENGTH)
+        {
+            System.out.println("error");
+            return;
+        }
+        else
+        {
+            bucket_index =
+                    (((long)(buf[0] & 0xff) << 56) |
+                    ((long)(buf[1] & 0xff) << 48) |
+                    ((long)(buf[2] & 0xff) << 40) |
+                    ((long)(buf[3] & 0xff) << 32) |
+                    ((long)(buf[4] & 0xff) << 24) |
+                    ((long)(buf[5] & 0xff) << 16) |
+                    ((long)(buf[6] & 0xff) <<  8) |
+                    ((long)(buf[7] & 0xff)));
+
+            sub_index = (((long)(buf[8 + 0] & 0xff) << 56) |
+                         ((long)(buf[8 + 1] & 0xff) << 48) |
+                         ((long)(buf[8 + 2] & 0xff) << 40) |
+                         ((long)(buf[8 + 3] & 0xff) << 32) |
+                         ((long)(buf[8 + 4] & 0xff) << 24) |
+                         ((long)(buf[8 + 5] & 0xff) << 16) |
+                         ((long)(buf[8 + 6] & 0xff) <<  8) |
+                         ((long)(buf[8 + 7] & 0xff)));
+
+
+
+            average_value = (((long)(buf[8*2 + 0] & 0xff) << 56) |
+                             ((long)(buf[8*2 + 1] & 0xff) << 48) |
+                             ((long)(buf[8*2 + 2] & 0xff) << 40) |
+                             ((long)(buf[8*2 + 3] & 0xff) << 32) |
+                             ((long)(buf[8*2 + 4] & 0xff) << 24) |
+                             ((long)(buf[8*2 + 5] & 0xff) << 16) |
+                             ((long)(buf[8*2 + 6] & 0xff) <<  8) |
+                             ((long)(buf[8*2 + 7] & 0xff)));
+
+            position_index = (((long)(buf[8*3 + 0] & 0xff) << 56) |
+                              ((long)(buf[8*3 + 1] & 0xff) << 48) |
+                              ((long)(buf[8*3 + 2] & 0xff) << 40) |
+                              ((long)(buf[8*3 + 3] & 0xff) << 32) |
+                              ((long)(buf[8*3 + 4] & 0xff) << 24) |
+                              ((long)(buf[8*3 + 5] & 0xff) << 16) |
+                              ((long)(buf[8*3 + 6] & 0xff) <<  8) |
+                              ((long)(buf[8*3 + 7] & 0xff)));
+
+            for (int i = 0; i < Info.ATTRIBUTE_NUMBER; i++)
+            {
+                int j = i + Info.POSISION_INDEX_NUMBER
+                        + Info.AVERATGE_VALUE_NUMBER
+                        + Info.BUCKET_INDEX_NUMBER
+                        + Info.SUB_NUM_NUMBER;
+
+                attributes[i] = (((long)(buf[8*j + 0] & 0xff) << 56) |
+                                 ((long)(buf[8*j + 1] & 0xff) << 48) |
+                                 ((long)(buf[8*j + 3] & 0xff) << 32) |
+                                 ((long)(buf[8*j + 4] & 0xff) << 24) |
+                                 ((long)(buf[8*j + 5] & 0xff) << 16) |
+                                 ((long)(buf[8*j + 6] & 0xff) <<  8) |
+                                 ((long)(buf[8*j + 7] & 0xff)));
             }
         }
     }
@@ -275,6 +387,8 @@ public class Tuple
     public String toString()
     {
         String str = new String();
+
+        str += "TPI: " + this.temp_position + "|";
 
         str += "BI: " + this.bucket_index + "|";
 
