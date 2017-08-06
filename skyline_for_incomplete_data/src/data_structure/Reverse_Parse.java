@@ -207,6 +207,119 @@ public class Reverse_Parse
         return buf;
     }
 
+    //将带有桶号以及平均值的元组转化成byte[]
+    public byte[] rev_parse_tuple_bucket_average(Tuple temp)
+    {
+        byte[] buf = new byte[Info.TUPLE_AVERAGE_BUCKET_BYTES_LENGTH];
+
+        buf[0] = (byte)(0xff & (temp.bucket_index >> 56));
+        buf[1] = (byte)(0xff & (temp.bucket_index >> 48));
+        buf[2] = (byte)(0xff & (temp.bucket_index >> 40));
+        buf[3] = (byte)(0xff & (temp.bucket_index >> 32));
+        buf[4] = (byte)(0xff & (temp.bucket_index >> 24));
+        buf[5] = (byte)(0xff & (temp.bucket_index >> 16));
+        buf[6] = (byte)(0xff & (temp.bucket_index >>  8));
+        buf[7] = (byte)(0xff & temp.bucket_index);
+
+        buf[8 + 0] = (byte)(0xff & (temp.average_value >> 56));
+        buf[8 + 1] = (byte)(0xff & (temp.average_value >> 48));
+        buf[8 + 2] = (byte)(0xff & (temp.average_value >> 40));
+        buf[8 + 3] = (byte)(0xff & (temp.average_value >> 32));
+        buf[8 + 4] = (byte)(0xff & (temp.average_value >> 24));
+        buf[8 + 5] = (byte)(0xff & (temp.average_value >> 16));
+        buf[8 + 6] = (byte)(0xff & (temp.average_value >>  8));
+        buf[8 + 7] = (byte)(0xff & temp.average_value);
+
+
+        buf[8*2 + 0] = (byte)(0xff & (temp.position_index >> 56));
+        buf[8*2 + 1] = (byte)(0xff & (temp.position_index >> 48));
+        buf[8*2 + 2] = (byte)(0xff & (temp.position_index >> 40));
+        buf[8*2 + 3] = (byte)(0xff & (temp.position_index >> 32));
+        buf[8*2 + 4] = (byte)(0xff & (temp.position_index >> 24));
+        buf[8*2 + 5] = (byte)(0xff & (temp.position_index >> 16));
+        buf[8*2 + 6] = (byte)(0xff & (temp.position_index >>  8));
+        buf[8*2 + 7] = (byte)(0xff & temp.position_index);
+
+        int attribute_start = Info.POSISION_INDEX_NUMBER
+                + Info.BUCKET_INDEX_NUMBER + Info.AVERATGE_VALUE_NUMBER;
+
+        for (int i = 0; i < Info.ATTRIBUTE_NUMBER; i++)
+        {
+            buf[8*(attribute_start + i) + 0] = (byte)(0xff & (temp.attributes[i] >> 56));
+            buf[8*(attribute_start + i) + 1] = (byte)(0xff & (temp.attributes[i] >> 48));
+            buf[8*(attribute_start + i) + 2] = (byte)(0xff & (temp.attributes[i] >> 40));
+            buf[8*(attribute_start + i) + 3] = (byte)(0xff & (temp.attributes[i] >> 32));
+            buf[8*(attribute_start + i) + 4] = (byte)(0xff & (temp.attributes[i] >> 24));
+            buf[8*(attribute_start + i) + 5] = (byte)(0xff & (temp.attributes[i] >> 16));
+            buf[8*(attribute_start + i) + 6] = (byte)(0xff & (temp.attributes[i] >>  8));
+            buf[8*(attribute_start + i) + 7] = (byte)(0xff & temp.attributes[i]);
+        }
+
+        return buf;
+    }
+
+    //将带有桶号以及平均值的子表元组转化成byte[]
+    public byte[] rev_parse_sub_tuple_bucket_average(Tuple temp)
+    {
+        byte[] buf = new byte[Info.TUPLE_SUB_AVERAGE_BUCKET_BYTES_LENGTH];
+
+        buf[0] = (byte)(0xff & (temp.bucket_index >> 56));
+        buf[1] = (byte)(0xff & (temp.bucket_index >> 48));
+        buf[2] = (byte)(0xff & (temp.bucket_index >> 40));
+        buf[3] = (byte)(0xff & (temp.bucket_index >> 32));
+        buf[4] = (byte)(0xff & (temp.bucket_index >> 24));
+        buf[5] = (byte)(0xff & (temp.bucket_index >> 16));
+        buf[6] = (byte)(0xff & (temp.bucket_index >>  8));
+        buf[7] = (byte)(0xff & temp.bucket_index);
+
+        buf[8 + 0] = (byte)(0xff & (temp.sub_index >> 56));
+        buf[8 + 1] = (byte)(0xff & (temp.sub_index >> 48));
+        buf[8 + 2] = (byte)(0xff & (temp.sub_index >> 40));
+        buf[8 + 3] = (byte)(0xff & (temp.sub_index >> 32));
+        buf[8 + 4] = (byte)(0xff & (temp.sub_index >> 24));
+        buf[8 + 5] = (byte)(0xff & (temp.sub_index >> 16));
+        buf[8 + 6] = (byte)(0xff & (temp.sub_index >>  8));
+        buf[8 + 7] = (byte)(0xff & temp.sub_index);
+
+        buf[8*2 + 0] = (byte)(0xff & (temp.average_value >> 56));
+        buf[8*2 + 1] = (byte)(0xff & (temp.average_value >> 48));
+        buf[8*2 + 2] = (byte)(0xff & (temp.average_value >> 40));
+        buf[8*2 + 3] = (byte)(0xff & (temp.average_value >> 32));
+        buf[8*2 + 4] = (byte)(0xff & (temp.average_value >> 24));
+        buf[8*2 + 5] = (byte)(0xff & (temp.average_value >> 16));
+        buf[8*2 + 6] = (byte)(0xff & (temp.average_value >>  8));
+        buf[8*2 + 7] = (byte)(0xff & temp.average_value);
+
+
+        buf[8*3 + 0] = (byte)(0xff & (temp.position_index >> 56));
+        buf[8*3 + 1] = (byte)(0xff & (temp.position_index >> 48));
+        buf[8*3 + 2] = (byte)(0xff & (temp.position_index >> 40));
+        buf[8*3 + 3] = (byte)(0xff & (temp.position_index >> 32));
+        buf[8*3 + 4] = (byte)(0xff & (temp.position_index >> 24));
+        buf[8*3 + 5] = (byte)(0xff & (temp.position_index >> 16));
+        buf[8*3 + 6] = (byte)(0xff & (temp.position_index >>  8));
+        buf[8*3 + 7] = (byte)(0xff & temp.position_index);
+
+        int attribute_start = Info.POSISION_INDEX_NUMBER
+                + Info.BUCKET_INDEX_NUMBER + Info.AVERATGE_VALUE_NUMBER
+                + Info.SUB_NUM_NUMBER;
+
+        for (int i = 0; i < Info.ATTRIBUTE_NUMBER; i++)
+        {
+            buf[8*(attribute_start + i) + 0] = (byte)(0xff & (temp.attributes[i] >> 56));
+            buf[8*(attribute_start + i) + 1] = (byte)(0xff & (temp.attributes[i] >> 48));
+            buf[8*(attribute_start + i) + 2] = (byte)(0xff & (temp.attributes[i] >> 40));
+            buf[8*(attribute_start + i) + 3] = (byte)(0xff & (temp.attributes[i] >> 32));
+            buf[8*(attribute_start + i) + 4] = (byte)(0xff & (temp.attributes[i] >> 24));
+            buf[8*(attribute_start + i) + 5] = (byte)(0xff & (temp.attributes[i] >> 16));
+            buf[8*(attribute_start + i) + 6] = (byte)(0xff & (temp.attributes[i] >>  8));
+            buf[8*(attribute_start + i) + 7] = (byte)(0xff & temp.attributes[i]);
+        }
+
+        return buf;
+    }
+
+
     //将初始列属性转化成byte[]
     public byte[] rev_parse_column(Column temp)
     {

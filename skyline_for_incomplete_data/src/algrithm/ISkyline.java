@@ -73,8 +73,7 @@ public class ISkyline
                         break;
                     }
                 }
-
-                byte[] write_buf = new byte[Info.TUPLE_BUCKET_BYTES_LENGTH];
+                byte[] write_buf;
 
                 //当前位图，刚出现，初始化写
                 if (is_exist == false)
@@ -90,6 +89,8 @@ public class ISkyline
 
                     bucket_writer[arr.size()].write(write_buf);
 
+                    in_out_count ++;
+
                     ib_temp.block_num = arr.size();
                     ib_temp.block_size ++;
                     arr.add(ib_temp);
@@ -101,6 +102,8 @@ public class ISkyline
                     write_buf = rp.rev_parse_tuple_with_bucket_num(temp);
 
                     bucket_writer[ib_temp.block_num].write(write_buf);
+
+                    in_out_count ++;
                 }
             }
             for (int i = 0 ; i < arr.size() ; i ++)
@@ -201,6 +204,8 @@ public class ISkyline
 
                         bucket_writer[i].write(write_buf);
                         bucket_count ++;
+
+                        in_out_count ++;
                     }
                 }
                 arr.get(i).block_size = bucket_count;
@@ -305,6 +310,8 @@ public class ISkyline
                             shadow_writer.write(write_buf);
                             shadow_num ++;
 
+                            in_out_count ++;
+
                             //从桶内移除当前元组，桶内元组数减一
                             bucket_arr.remove(k);
                             arr.get(i).block_size --;
@@ -312,7 +319,6 @@ public class ISkyline
                         }
                     }
                 }
-
                 for (int j = i+1 ; j < arr.size() ; j ++)
                 {
                     bucket_reader[j] = new BufferedInputStream(new FileInputStream(
@@ -349,6 +355,8 @@ public class ISkyline
 
                                 shadow_writer.write(write_buf);
                                 shadow_num ++;
+
+                                in_out_count ++;
 
                                 bucket_arr.remove(l);
                                 arr.get(i).block_size --;
@@ -408,12 +416,8 @@ public class ISkyline
                 if (flag == false)
                     result_arr.add(candidate_arr.get(i));
             }
-
             System.out.println("结果集中等待和shadow比较的元组个数为："
                     + result_arr.size());
-//            for (int i = 0 ; i < result_arr.size() ; i ++)
-//                System.out.println(result_arr.get(i));
-
 
             //与shadow中的元组进行比较
             for (int i = 0 ; i < shadow_num ; i ++)
@@ -437,12 +441,10 @@ public class ISkyline
                     if (domi == 1)
                     {
                         result_arr.remove(j);
-
                         j --;
                     }
                 }
             }
-
             System.out.println("I/O数为：" + in_out_count);
 
             System.out.println("最终的skyline结果元组个数为：");
@@ -451,14 +453,12 @@ public class ISkyline
             for (int i = 0 ; i < result_arr.size() ; i ++)
                 System.out.println(result_arr.get(i));
 
-
             shadow_reader.close();
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-
     }
 
     public static void main(String[] args)
