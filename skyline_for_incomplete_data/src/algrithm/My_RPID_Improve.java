@@ -5,22 +5,22 @@ import src.data_structure.Reverse_Parse;
 import src.data_structure.Tuple;
 import src.global.Info;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Created by Xue on 2017/7/27.
+ * Created by Xue on 2017/8/6.
  */
-public class test
+public class My_RPID_Improve
 {
     int partition_num = Info.TUPLE_NUMBER / Info.BLOCK_SIZE;
 
     //记录I/O数
     int in_out_count = 0;
+
+    //记录skyline结果数
+    int skyline_result = 0;
 
     //记录自剪后的候选集剩余的元组数
     int candidate_prune = 0;
@@ -28,6 +28,7 @@ public class test
     //记录shadow中的元组数
     int shadow_count = 0;
 
+    int[] shadow_num = new int[partition_num];
 
     public void prune_candidate()
     {
@@ -42,7 +43,7 @@ public class test
             byte[] prune_buf =
                     new byte[Info.TUPLE_INITIAL_BYTES_LENGTH];
             int pruneToRead = prune_buf.length;
-            int bytesRead = 0;
+              int bytesRead = 0;
 
             byte[] size_buf = new byte[Info.ATTRIBUTE_BYTES_LENGTH];
             int sizeToRead = size_buf.length;
@@ -86,7 +87,7 @@ public class test
             BufferedInputStream scan_reader =
                     new BufferedInputStream(new FileInputStream(
                             Info.ROOT_PATH + Info.sort_prefix
-                                    + Info.SCAN_AVERAGE_BUCKET_TABLE_PATH));
+                            + Info.SCAN_AVERAGE_BUCKET_TABLE_PATH));
 
             byte[] scan_buf =
                     new byte[Info.TUPLE_AVERAGE_BUCKET_BYTES_LENGTH];
@@ -97,13 +98,11 @@ public class test
                     + Info.SCAN_CANDIDATE_TABLE_PATH));
 
             //写shadow
-            BufferedOutputStream shadow_writer = new BufferedOutputStream(
-                    new FileOutputStream(Info.ROOT_PATH + Info.SHADOW_ROOT
-                    + Info.SHADOW_SKYLINE_PATH));
+            BufferedOutputStream[] shadow_writer = new BufferedOutputStream[partition_num];
 
             for (int i = 0; i < partition_num; i++)
             {
-                Tuple[] arr = new Tuple[Info.BLOCK_SIZE];
+               Tuple[] arr = new Tuple[Info.BLOCK_SIZE];
 
                 //将元组按块读出，并放入arr中
                 for (int j = 0; j < Info.BLOCK_SIZE; j++)
@@ -123,9 +122,9 @@ public class test
                 }
 
                 //存放不被传递支配的元组
-                byte[] shadow_buf;
-
-                Reverse_Parse rp = new Reverse_Parse();
+                ArrayList<Tuple> shadow = new ArrayList<>();
+                byte[] shadow_buf =
+                        new byte[Info.TUPLE_SUB_AVERAGE_BUCKET_BYTES_LENGTH];
 
                 //比较每个块中的元组
                 //保证被支配元组只考虑一次，不管以何种方式被支配
@@ -157,13 +156,7 @@ public class test
                             if (arr[j].bucket_index != arr[k].bucket_index)
                             {
                                 arr[k].sub_index = i;
-
-                                shadow_buf =
-                                        rp.rev_parse_sub_tuple_bucket_average(arr[k]);
-                                shadow_writer.write(shadow_buf);
-
-                                shadow_count ++;
-                                in_out_count ++;
+                                shadow.add(arr[k]);
                             }
                         }
 
@@ -184,13 +177,7 @@ public class test
                     if ((!if_trans_dominated) && (arr[j].dominated))
                     {
                         arr[j].sub_index = i;
-
-                        shadow_buf =
-                                rp.rev_parse_sub_tuple_bucket_average(arr[j]);
-                        shadow_writer.write(shadow_buf);
-
-                        shadow_count ++;
-                        in_out_count ++;
+                        shadow.add(arr[j]);
                     }
                 }
 
@@ -214,13 +201,7 @@ public class test
                             if (arr[j].bucket_index != prune_arr[k].bucket_index)
                             {
                                 arr[j].sub_index = i;
-
-                                shadow_buf =
-                                        rp.rev_parse_sub_tuple_bucket_average(arr[j]);
-                                shadow_writer.write(shadow_buf);
-
-                                in_out_count ++;
-                                shadow_count ++;
+                                shadow.add(arr[j]);
                             }
 
                             break;
@@ -230,6 +211,7 @@ public class test
                     //经过几轮比较，不被支配，写入候选集
                     if (arr[j].dominated == false)
                     {
+                        Reverse_Parse rp = new Reverse_Parse();
                         scan_buf = rp.rev_parse_tuple_bucket_average(arr[j]);
 
                         writer.write(scan_buf);
@@ -240,10 +222,37 @@ public class test
                     }
                 }
 
-            }
+                //对shadow按照平均值排序后写回,先放入数组，再排序
+                Tuple[] shadow_arr = new Tuple[shadow.size()];
+                for (int j = 0; j < shadow.size(); j++)
+                {
+                    shadow_arr[j] = new Tuple();
+                    shadow_arr[j].copyfrom(shadow.get(j));
+                }
+                Compare_Tuple_Average_Value ctav = new Compare_Tuple_Average_Value();
+                Arrays.sort(shadow_arr, ctav);
 
-            shadow_writer.flush();
-            shadow_writer.close();
+                shadow_count += shadow.size();
+                shadow_num[i] = shadow.size();
+
+                //写入shadow
+               shadow_writer[i] = new BufferedOutputStream(new FileOutputStream(
+                       Info.ROOT_PATH + Info.SHADOW_ROOT
+                               + Info.SHADOW_PATH + i + Info.extension));
+                for (int j = 0; j < shadow.size(); j++)
+                {
+                    Reverse_Parse rp = new Reverse_Parse();
+                    shadow_buf =
+                            rp.rev_parse_sub_tuple_bucket_average(shadow_arr[j]);
+
+                    shadow_writer[i].write(shadow_buf);
+
+                    in_out_count ++;
+                }
+
+                shadow_writer[i].flush();
+                shadow_writer[i].close();
+            }
 
             writer.flush();
             writer.close();
@@ -261,7 +270,7 @@ public class test
         }
     }
 
-    //读取shadow
+    //以归并的方式读取shadow
     public void generate_skyline()
     {
         try
@@ -301,7 +310,7 @@ public class test
                     if (result == 1)
                         cand_arr[j].dominated = true;
 
-                        //I被J支配
+                    //I被J支配
                     else if (result == 0)
                         cand_arr[i].dominated = true;
 
@@ -319,31 +328,44 @@ public class test
             System.out.println("剪切后剩下的候选元组数为：" + cand_list.size());
 
             //以归并的方式读取shadow,读取的每个元组与cand_list所有元组比较，被支配的直接丢弃
-            BufferedInputStream shadow_reader = new BufferedInputStream(
-                    new FileInputStream(Info.ROOT_PATH + Info.SHADOW_ROOT
-                            + Info.SHADOW_SKYLINE_PATH));
+            BufferedInputStream[] shadow_reader = new BufferedInputStream[partition_num];
+            for (int i = 0; i < partition_num; i++)
+                shadow_reader[i] = new BufferedInputStream(new FileInputStream(
+                        Info.ROOT_PATH + Info.SHADOW_ROOT
+                                + Info.SHADOW_PATH + i + Info.extension));
 
             byte[] shadow_buf =
                     new byte[Info.TUPLE_SUB_AVERAGE_BUCKET_BYTES_LENGTH];
             int shadowToRead = shadow_buf.length;
 
-            for (int i = 0; i < shadow_count; i++)
+            Tuple[] min_subtable = new Tuple[partition_num];
+
+            //从每个子表中读出一个
+            for (int j = 0; j < min_subtable.length; j++)
             {
                 while (bytesRead < shadowToRead)
-                    bytesRead += shadow_reader.read(shadow_buf, bytesRead,
-                            shadowToRead - bytesRead);
+                    bytesRead += shadow_reader[j].read(shadow_buf,
+                            bytesRead, shadowToRead - bytesRead);
                 bytesRead = 0;
 
                 in_out_count ++;
 
+                shadow_num[j]--;
 
-                Tuple temp = new Tuple();
-                temp.parse_sub_average_bucket(shadow_buf);
+                min_subtable[j] = new Tuple();
+                min_subtable[j].parse_sub_average_bucket(shadow_buf);
+            }
+
+            Compare_Tuple_Average_Value ctav = new Compare_Tuple_Average_Value();
+
+            for (int i = 0; i < shadow_count; i++)
+            {
+                Arrays.sort(min_subtable, ctav);
 
                 for (int j = 0; j < cand_list.size(); j++)
                 {
                     int result = dc.dominate_comp(
-                           temp, cand_list.get(j));
+                            min_subtable[0], cand_list.get(j));
 
                     if (result == 1)
                     {
@@ -351,6 +373,30 @@ public class test
                         j --;
                     }
                 }
+
+                int read_next = (int) min_subtable[0].sub_index;
+
+                //找当前最小值所在的子表中读取一个，若该子表为空，则置为最大值
+                if (shadow_num[read_next] != 0)
+                {
+                    while (bytesRead < shadowToRead)
+                        bytesRead += shadow_reader[read_next].read(
+                                shadow_buf, bytesRead, shadowToRead - bytesRead);
+                    bytesRead = 0;
+
+                    in_out_count ++;
+
+                    shadow_num[read_next]--;
+
+                    Tuple temp = new Tuple();
+                    temp.parse_sub_average_bucket(shadow_buf);
+
+                    min_subtable[0].copyfrom(temp);
+                }
+                else
+                    min_subtable[0].bucket_index = Long.MAX_VALUE;
+
+
             }
 
             //输出skyline结果
@@ -360,8 +406,8 @@ public class test
             System.out.println("skyline结果数为：" + cand_list.size());
             System.out.println("自剪产生的I/O数为：" + in_out_count);
 
-
-            shadow_reader.close();
+            for (int i = 0; i < partition_num; i++)
+                shadow_reader[i].close();
 
             cand_reader.close();
 
@@ -377,13 +423,13 @@ public class test
     {
         long startTime = System.currentTimeMillis();
 
-        test tt = new test();
-        tt.prune_candidate();
-        tt.generate_skyline();
+        My_RPID_Improve mri = new My_RPID_Improve();
+        mri.prune_candidate();
+
+        mri.generate_skyline();
 
         long endTime = System.currentTimeMillis();
 
         System.out.println("程序运行时间：" + (endTime - startTime) + "ms");
-
     }
 }

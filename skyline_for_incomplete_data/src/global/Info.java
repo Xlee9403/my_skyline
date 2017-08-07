@@ -68,6 +68,9 @@ public class Info
     public static String BUCKET_PATH = "bucket_";
     public static String BUCKET_SKYLINE_PATH = "bucket_skyline_";
 
+    public static String SHADOW_ROOT = "shadow/";
+    public static String SHADOW_PATH = "shadow";
+
     public static String SHADOW_SKYLINE_PATH = "shadow_skyline.tbl";
 
     public static String PRUNE_BLOCK_PATH = "prune_block.tbl";
@@ -76,6 +79,7 @@ public class Info
 
     public static String BITMAP_ROOT = "bitmap/";
     public static String BITMAP_PATH = "bitmap";
+
 
     public static double incompleteness_ratio = 0.1;
 

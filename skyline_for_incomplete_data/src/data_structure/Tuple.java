@@ -249,7 +249,7 @@ public class Tuple
     {
         if (buf.length != Info.TUPLE_AVERAGE_BUCKET_BYTES_LENGTH)
         {
-            System.out.println("error");
+            System.out.println("bytes error");
             return;
         }
         else

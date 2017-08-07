@@ -402,7 +402,7 @@ public class MY_RPID_Improve_Bitmap
         MY_RPID_Improve_Bitmap mib = new MY_RPID_Improve_Bitmap();
         mib.prune_candidate();
 
-        mib.generate_base_skyline();
+ //       mib.generate_base_skyline();
 
         long endTime = System.currentTimeMillis();
 
